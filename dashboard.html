@@ -1,0 +1,1308 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Job Hunt Mission Control | Vansh Sharma</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600&display=swap');
+
+    body {
+      font-family: 'Inter', sans-serif;
+      background-color: #0b0f19;
+      color: #e2e8f0;
+    }
+
+    .font-mono {
+      font-family: 'JetBrains Mono', monospace;
+    }
+
+    .glass {
+      background: rgba(17, 24, 39, 0.7);
+      backdrop-filter: blur(12px);
+      border: 1px solid rgba(255, 255, 255, 0.08);
+    }
+
+    .glass-card {
+      background: rgba(17, 24, 39, 0.6);
+      backdrop-filter: blur(8px);
+      border: 1px solid rgba(255, 255, 255, 0.05);
+      transition: all 0.2s ease-in-out;
+    }
+
+    .glass-card:hover {
+      border-color: rgba(99, 102, 241, 0.3);
+      transform: translateY(-2px);
+    }
+
+    ::-webkit-scrollbar {
+      width: 6px;
+      height: 6px;
+    }
+
+    ::-webkit-scrollbar-track {
+      background: #0f172a;
+    }
+
+    ::-webkit-scrollbar-thumb {
+      background: #334155;
+      border-radius: 3px;
+    }
+
+    ::-webkit-scrollbar-thumb:hover {
+      background: #475569;
+    }
+  </style>
+</head>
+
+<body class="min-h-screen flex flex-col">
+
+  <!-- Top Navigation Header -->
+  <header class="glass sticky top-0 z-50 px-6 py-4 border-b border-slate-800 flex items-center justify-between">
+    <div class="flex items-center space-x-3">
+      <div
+        class="w-10 h-10 rounded-xl bg-gradient-to-tr from-indigo-600 to-cyan-400 flex items-center justify-center text-white font-bold text-lg shadow-lg shadow-indigo-500/20">
+        <i class="fa-solid fa-bolt"></i>
+      </div>
+      <div>
+        <h1 class="text-lg font-bold text-white tracking-tight flex items-center gap-2">
+          Job Application Mission Control
+          <span
+            class="text-xs px-2 py-0.5 rounded-full bg-indigo-500/10 text-indigo-400 border border-indigo-500/20">Live
+            Fleet</span>
+        </h1>
+        <p class="text-xs text-slate-400">Candidate: Vansh Sharma (MCA AI & Data Science 2026)</p>
+      </div>
+    </div>
+
+    <!-- Active Status Indicator -->
+    <div class="flex items-center space-x-4">
+      <div id="status-pill"
+        class="flex items-center space-x-2 px-3 py-1.5 rounded-full bg-emerald-500/10 border border-emerald-500/20 text-emerald-400 text-xs font-semibold">
+        <span class="w-2 h-2 rounded-full bg-emerald-400 animate-pulse"></span>
+        <span id="status-text">SYSTEM READY</span>
+      </div>
+      <button onclick="fetchStats()"
+        class="p-2 rounded-lg bg-slate-800 hover:bg-slate-700 text-slate-300 transition text-sm" title="Refresh">
+        <i class="fa-solid fa-arrows-rotate"></i>
+      </button>
+    </div>
+  </header>
+
+  <main class="flex-1 max-w-7xl w-full mx-auto p-6 space-y-6">
+
+    <!-- Metrics Header Row -->
+    <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+      <div class="glass-card rounded-2xl p-5 flex items-center justify-between">
+        <div>
+          <p class="text-xs font-medium text-slate-400 uppercase tracking-wider">Total Applications</p>
+          <h3 id="stat-total" class="text-3xl font-extrabold text-white mt-1">--</h3>
+          <p class="text-xs text-slate-500 mt-1">Verified across all portals</p>
+        </div>
+        <div
+          class="w-12 h-12 rounded-xl bg-indigo-500/10 border border-indigo-500/20 flex items-center justify-center text-indigo-400 text-xl">
+          <i class="fa-solid fa-paper-plane"></i>
+        </div>
+      </div>
+
+      <div class="glass-card rounded-2xl p-5 flex items-center justify-between">
+        <div>
+          <p class="text-xs font-medium text-slate-400 uppercase tracking-wider">Today's Output</p>
+          <h3 id="stat-today" class="text-3xl font-extrabold text-cyan-400 mt-1">--</h3>
+          <p class="text-xs text-slate-500 mt-1">Submitted in current 24h</p>
+        </div>
+        <div
+          class="w-12 h-12 rounded-xl bg-cyan-500/10 border border-cyan-500/20 flex items-center justify-center text-cyan-400 text-xl">
+          <i class="fa-solid fa-calendar-day"></i>
+        </div>
+      </div>
+
+      <div class="glass-card rounded-2xl p-5 flex items-center justify-between">
+        <div>
+          <p class="text-xs font-medium text-slate-400 uppercase tracking-wider">Active Platforms</p>
+          <h3 id="stat-portals" class="text-3xl font-extrabold text-emerald-400 mt-1">--</h3>
+          <p class="text-xs text-slate-500 mt-1">Naukri, LinkedIn, Cutshort, etc</p>
+        </div>
+        <div
+          class="w-12 h-12 rounded-xl bg-emerald-500/10 border border-emerald-500/20 flex items-center justify-center text-emerald-400 text-xl">
+          <i class="fa-solid fa-layer-group"></i>
+        </div>
+      </div>
+
+      <div class="glass-card rounded-2xl p-5 flex items-center justify-between">
+        <div>
+          <p class="text-xs font-medium text-slate-400 uppercase tracking-wider">Zero-Ban Safety</p>
+          <h3 class="text-3xl font-extrabold text-amber-400 mt-1">ACTIVE</h3>
+          <p class="text-xs text-slate-500 mt-1">15-20s pacing & 0-2 YOE filter</p>
+        </div>
+        <div
+          class="w-12 h-12 rounded-xl bg-amber-500/10 border border-amber-500/20 flex items-center justify-center text-amber-400 text-xl">
+          <i class="fa-solid fa-shield-halved"></i>
+        </div>
+      </div>
+    </div>
+
+    <!-- Main Command Deck & Platform Grid -->
+    <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+
+      <!-- Left 2 Cols: Automation Launchers & Console -->
+      <div class="lg:col-span-2 space-y-6">
+
+        <!-- 1-Click Action Launchers -->
+        <div class="glass rounded-2xl p-6 border border-slate-800">
+          <h2 class="text-sm font-semibold text-white tracking-wide uppercase flex items-center gap-2 mb-4">
+            <i class="fa-solid fa-play text-indigo-400"></i>
+            1-Click Launchers (Click to Trigger Automation)
+          </h2>
+
+          <!-- Hero Swarm Launcher & Fill-All Quotas Banner -->
+          <div class="mb-4 space-y-2.5">
+            <button onclick="triggerRun('autopilot')"
+              class="w-full flex items-center justify-between p-4 rounded-xl bg-gradient-to-r from-blue-900/90 via-indigo-900/80 to-purple-900/90 hover:from-blue-800 hover:via-indigo-800 hover:to-purple-800 border-2 border-blue-400 text-left transition shadow-xl shadow-blue-500/20 group">
+              <div class="flex items-center space-x-3.5">
+                <div
+                  class="w-12 h-12 rounded-xl bg-gradient-to-tr from-blue-400 to-indigo-300 flex items-center justify-center text-slate-950 text-2xl font-black shadow-md group-hover:scale-105 transition">
+                  <i class="fa-solid fa-clock-rotate-left"></i>
+                </div>
+                <div>
+                  <p class="font-black text-white text-base flex items-center gap-2">
+                    24/7 AUTOPILOT DAEMON
+                    <span
+                      class="text-[10px] px-2.5 py-0.5 rounded-full bg-blue-400 text-slate-950 uppercase font-black tracking-wider animate-pulse">ZERO
+                      INTERVENTION</span>
+                  </p>
+                  <p class="text-xs text-blue-100 mt-0.5">Runs automatically every day at 9:00 AM + hourly scans for
+                    recruiter emails, calendar jobs &amp; platform quotas.</p>
+                </div>
+              </div>
+              <div
+                class="flex items-center space-x-2 text-blue-300 group-hover:text-white transition font-black text-xs pr-2">
+                <span>Engage Auto-Pilot</span>
+                <i class="fa-solid fa-play text-xs group-hover:translate-x-1 transition"></i>
+              </div>
+            </button>
+
+            <button onclick="triggerRun('fill_all')"
+              class="w-full flex items-center justify-between p-4 rounded-xl bg-gradient-to-r from-emerald-900/80 via-teal-900/70 to-cyan-900/80 hover:from-emerald-800 hover:via-teal-800 hover:to-cyan-800 border-2 border-emerald-400 text-left transition shadow-xl shadow-emerald-500/20 group">
+              <div class="flex items-center space-x-3.5">
+                <div
+                  class="w-12 h-12 rounded-xl bg-gradient-to-tr from-emerald-400 to-teal-300 flex items-center justify-center text-slate-950 text-2xl font-black shadow-md group-hover:scale-105 transition">
+                  <i class="fa-solid fa-gauge-high"></i>
+                </div>
+                <div>
+                  <p class="font-black text-white text-base flex items-center gap-2">
+                    FILL ALL DAILY PLATFORM QUOTAS
+                    <span
+                      class="text-[10px] px-2.5 py-0.5 rounded-full bg-emerald-400 text-slate-950 uppercase font-black tracking-wider animate-pulse">MAX
+                      CAPACITY MODE</span>
+                  </p>
+                  <p class="text-xs text-emerald-100 mt-0.5">Automates every uncapped website: LinkedIn + foundit +
+                    Cutshort + Hirist + Instahyre + Hasjob + Startups until every daily cap is filled.</p>
+                </div>
+              </div>
+              <div
+                class="flex items-center space-x-2 text-emerald-300 group-hover:text-white transition font-black text-xs pr-2">
+                <span>Fill All Now</span>
+                <i class="fa-solid fa-arrow-right text-xs group-hover:translate-x-1 transition"></i>
+              </div>
+            </button>
+
+            <button onclick="triggerRun('swarm')"
+              class="w-full flex items-center justify-between p-3.5 rounded-xl bg-slate-900/80 hover:bg-slate-800/90 border border-indigo-500/30 hover:border-indigo-400 text-left transition group">
+              <div class="flex items-center space-x-3">
+                <div
+                  class="w-8 h-8 rounded-lg bg-indigo-500/20 flex items-center justify-center text-indigo-400 text-base">
+                  <i class="fa-solid fa-network-wired"></i>
+                </div>
+                <div>
+                  <p class="font-bold text-white text-xs flex items-center gap-2">
+                    Standard Multi-Agent Swarm (Single Batch)
+                  </p>
+                  <p class="text-[11px] text-slate-400">Runs 1 cycle across LinkedIn, foundit, and Orca</p>
+                </div>
+              </div>
+              <span class="text-xs text-indigo-400 font-semibold group-hover:text-white transition">Deploy Batch
+                &rarr;</span>
+            </button>
+
+            <button onclick="triggerRun('inbound_email_calendar')"
+              class="w-full flex items-center justify-between p-3.5 rounded-xl bg-gradient-to-r from-amber-950/40 to-slate-900/80 hover:from-amber-900/50 hover:to-slate-800 border border-amber-500/40 text-left transition group">
+              <div class="flex items-center space-x-3">
+                <div
+                  class="w-8 h-8 rounded-lg bg-amber-500/20 flex items-center justify-center text-amber-400 text-base">
+                  <i class="fa-solid fa-calendar-check"></i>
+                </div>
+                <div>
+                  <p class="font-bold text-white text-xs flex items-center gap-2">
+                    Auto-Apply: Inbound Email Alerts &amp; Calendar Jobs
+                    <span
+                      class="text-[9px] px-2 py-0.2 rounded-full bg-amber-500/20 text-amber-300 border border-amber-500/30 font-semibold">Active
+                      Sync</span>
+                  </p>
+                  <p class="text-[11px] text-slate-400">Scans Indeed/LinkedIn job alerts + Google Calendar assigned
+                    links (Matrice AI, Zebra Tech)</p>
+                </div>
+              </div>
+              <span class="text-xs text-amber-400 font-semibold group-hover:text-white transition">Sync &amp; Apply
+                &rarr;</span>
+            </button>
+          </div>
+
+          <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
+            <button onclick="triggerRun('linkedin')"
+              class="flex items-center justify-between p-4 rounded-xl bg-slate-800/80 hover:bg-indigo-600/20 border border-slate-700/60 hover:border-indigo-500/40 text-left transition group">
+              <div>
+                <p class="font-semibold text-white group-hover:text-indigo-400 transition text-sm">LinkedIn AI Jobs</p>
+                <p class="text-xs text-slate-400 mt-0.5">5 safe fresh AI/Python jobs (0-2 YOE)</p>
+              </div>
+              <i class="fa-brands fa-linkedin text-2xl text-slate-400 group-hover:text-indigo-400 transition"></i>
+            </button>
+
+            <button onclick="triggerRun('operations')"
+              class="flex items-center justify-between p-4 rounded-xl bg-slate-800/80 hover:bg-amber-600/20 border border-slate-700/60 hover:border-amber-500/40 text-left transition group">
+              <div>
+                <p class="font-semibold text-white group-hover:text-amber-400 transition text-sm">Operations Roles</p>
+                <p class="text-xs text-slate-400 mt-0.5">Tech Ops, AI Ops & Operations Associate (0-2 YOE)</p>
+              </div>
+              <i class="fa-solid fa-gears text-2xl text-slate-400 group-hover:text-amber-400 transition"></i>
+            </button>
+
+            <button onclick="triggerRun('orca')"
+              class="flex items-center justify-between p-4 rounded-xl bg-slate-800/80 hover:bg-cyan-600/20 border border-slate-700/60 hover:border-cyan-500/40 text-left transition group">
+              <div>
+                <p class="font-semibold text-white group-hover:text-cyan-400 transition text-sm">Launch Orca Agent</p>
+                <p class="text-xs text-slate-400 mt-0.5">Autonomous Cutshort & Hirist hunt</p>
+              </div>
+              <i class="fa-solid fa-robot text-2xl text-slate-400 group-hover:text-cyan-400 transition"></i>
+            </button>
+
+            <button onclick="triggerRun('foundit')"
+              class="flex items-center justify-between p-4 rounded-xl bg-slate-800/80 hover:bg-emerald-600/20 border border-slate-700/60 hover:border-emerald-500/40 text-left transition group">
+              <div>
+                <p class="font-semibold text-white group-hover:text-emerald-400 transition text-sm">foundit Mass Engine
+                </p>
+                <p class="text-xs text-slate-400 mt-0.5">Applies to fresh matching tech openings</p>
+              </div>
+              <i class="fa-solid fa-briefcase text-2xl text-slate-400 group-hover:text-emerald-400 transition"></i>
+            </button>
+
+            <button onclick="triggerRun('cutshort')"
+              class="flex items-center justify-between p-4 rounded-xl bg-slate-800/80 hover:bg-violet-600/20 border border-slate-700/60 hover:border-violet-500/40 text-left transition group">
+              <div>
+                <p class="font-semibold text-white group-hover:text-violet-400 transition text-sm">Cutshort Fast-Apply
+                </p>
+                <p class="text-xs text-slate-400 mt-0.5">5 verified startup AI/Python roles</p>
+              </div>
+              <i class="fa-solid fa-bolt text-2xl text-slate-400 group-hover:text-violet-400 transition"></i>
+            </button>
+
+            <button onclick="triggerRun('hirist')"
+              class="flex items-center justify-between p-4 rounded-xl bg-slate-800/80 hover:bg-teal-600/20 border border-slate-700/60 hover:border-teal-500/40 text-left transition group">
+              <div>
+                <p class="font-semibold text-white group-hover:text-teal-400 transition text-sm">Hirist Tech Engine</p>
+                <p class="text-xs text-slate-400 mt-0.5">3 curated 0-2 YOE AI engineer roles</p>
+              </div>
+              <i class="fa-solid fa-code text-2xl text-slate-400 group-hover:text-teal-400 transition"></i>
+            </button>
+
+            <button onclick="triggerRun('unstop')"
+              class="flex items-center justify-between p-4 rounded-xl bg-slate-800/80 hover:bg-blue-600/20 border border-slate-700/60 hover:border-blue-500/40 text-left transition group">
+              <div>
+                <p class="font-semibold text-white group-hover:text-blue-400 transition text-sm">Unstop Tech Hiring</p>
+                <p class="text-xs text-slate-400 mt-0.5">Freshers & 0-2 YOE developer challenges</p>
+              </div>
+              <i class="fa-solid fa-trophy text-2xl text-slate-400 group-hover:text-blue-400 transition"></i>
+            </button>
+
+            <button onclick="triggerRun('cuvette')"
+              class="flex items-center justify-between p-4 rounded-xl bg-slate-800/80 hover:bg-rose-600/20 border border-slate-700/60 hover:border-rose-500/40 text-left transition group">
+              <div>
+                <p class="font-semibold text-white group-hover:text-rose-400 transition text-sm">Cuvette Freshers</p>
+                <p class="text-xs text-slate-400 mt-0.5">Verified tech internships & entry jobs</p>
+              </div>
+              <i class="fa-solid fa-user-graduate text-2xl text-slate-400 group-hover:text-rose-400 transition"></i>
+            </button>
+
+            <button onclick="triggerRun('wellfound')"
+              class="flex items-center justify-between p-4 rounded-xl bg-slate-800/80 hover:bg-red-600/20 border border-slate-700/60 hover:border-red-500/40 text-left transition group">
+              <div>
+                <p class="font-semibold text-white group-hover:text-red-400 transition text-sm">Wellfound (AngelList)
+                </p>
+                <p class="text-xs text-slate-400 mt-0.5">Funded AI & Python startup opportunities</p>
+              </div>
+              <i class="fa-solid fa-peace text-2xl text-slate-400 group-hover:text-red-400 transition"></i>
+            </button>
+
+            <button onclick="triggerRun('yc')"
+              class="flex items-center justify-between p-4 rounded-xl bg-slate-800/80 hover:bg-orange-600/20 border border-slate-700/60 hover:border-orange-500/40 text-left transition group">
+              <div>
+                <p class="font-semibold text-white group-hover:text-orange-400 transition text-sm">YC Work at a Startup
+                </p>
+                <p class="text-xs text-slate-400 mt-0.5">Y Combinator portfolio AI companies</p>
+              </div>
+              <i class="fa-solid fa-rocket text-2xl text-slate-400 group-hover:text-orange-400 transition"></i>
+            </button>
+
+            <button onclick="triggerRun('indeed')"
+              class="flex items-center justify-between p-4 rounded-xl bg-slate-800/80 hover:bg-sky-600/20 border border-slate-700/60 hover:border-sky-500/40 text-left transition group">
+              <div>
+                <p class="font-semibold text-white group-hover:text-sky-400 transition text-sm">Indeed Direct Apply</p>
+                <p class="text-xs text-slate-400 mt-0.5">High-volume corporate & entry-level roles</p>
+              </div>
+              <i class="fa-solid fa-magnifying-glass text-2xl text-slate-400 group-hover:text-sky-400 transition"></i>
+            </button>
+
+            <button onclick="triggerRun('fleet')"
+              class="flex items-center justify-between p-4 rounded-xl bg-slate-800/80 hover:bg-purple-600/20 border border-slate-700/60 hover:border-purple-500/40 text-left transition group">
+              <div>
+                <p class="font-semibold text-white group-hover:text-purple-400 transition text-sm">Full Fleet Scale</p>
+                <p class="text-xs text-slate-400 mt-0.5">Multi-threaded cross-portal runner</p>
+              </div>
+              <i class="fa-solid fa-network-wired text-2xl text-slate-400 group-hover:text-purple-400 transition"></i>
+            </button>
+          </div>
+
+          <div class="mt-4 pt-4 border-t border-slate-800/60 flex items-center justify-between">
+            <span class="text-xs text-slate-400 flex items-center gap-1.5">
+              <i class="fa-solid fa-circle-info text-slate-500"></i>
+              All automations run in background and auto-log to your CSV tracker.
+            </span>
+            <button onclick="stopRun()"
+              class="px-3 py-1.5 rounded-lg bg-red-500/10 hover:bg-red-500/20 border border-red-500/20 text-red-400 text-xs font-semibold flex items-center gap-1.5 transition">
+              <i class="fa-solid fa-stop"></i>
+              Emergency Abort
+            </button>
+          </div>
+        </div>
+
+        <!-- Live Streaming Log Terminal -->
+        <div class="glass rounded-2xl p-5 border border-slate-800 flex flex-col h-72">
+          <div class="flex items-center justify-between pb-3 border-b border-slate-800">
+            <span class="text-xs font-semibold text-slate-300 uppercase tracking-wide flex items-center gap-2">
+              <i class="fa-solid fa-terminal text-cyan-400"></i>
+              Live Runner Output
+            </span>
+            <span id="log-status" class="text-xs text-slate-500 font-mono">Idle</span>
+          </div>
+          <div id="terminal-box"
+            class="flex-1 overflow-y-auto font-mono text-xs text-slate-300 mt-3 space-y-1 p-2 bg-slate-950/60 rounded-xl border border-slate-900">
+            <div class="text-slate-500">// Ready. Click any launcher above to begin applying.</div>
+          </div>
+        </div>
+
+      </div>
+
+      <!-- Right Col: Portal Breakdown -->
+      <div class="glass rounded-2xl p-6 border border-slate-800 flex flex-col justify-between">
+        <div>
+          <h2 class="text-sm font-semibold text-white tracking-wide uppercase flex items-center gap-2 mb-4">
+            <i class="fa-solid fa-chart-pie text-cyan-400"></i>
+            Applications by Platform
+          </h2>
+          <div id="portal-cards" class="space-y-3">
+            <!-- Dynamically populated -->
+            <div class="text-xs text-slate-500">Loading breakdown...</div>
+          </div>
+        </div>
+
+        <div class="mt-6 pt-4 border-t border-slate-800 text-xs text-slate-400 space-y-2">
+          <div class="flex items-center justify-between">
+            <span>Naukri Daily Quota:</span>
+            <span class="text-amber-400 font-medium">Exhausted (Resets 12:00 AM)</span>
+          </div>
+          <div class="flex items-center justify-between">
+            <span>LinkedIn Today:</span>
+            <span class="text-emerald-400 font-medium">Safe Mode (&le; 10/day)</span>
+          </div>
+          <div class="flex items-center justify-between">
+            <span>RAM Hygiene:</span>
+            <span class="text-cyan-400 font-medium">&le; 2 Tabs Max</span>
+          </div>
+        </div>
+      </div>
+
+    </div>
+
+    <!-- Human-Written Screening Engine Card -->
+    <div class="glass rounded-2xl p-6 border border-slate-800">
+      <div class="flex items-center justify-between mb-3">
+        <div class="flex items-center space-x-2.5">
+          <div
+            class="w-8 h-8 rounded-lg bg-emerald-500/20 border border-emerald-500/30 flex items-center justify-center text-emerald-400 text-sm">
+            <i class="fa-solid fa-brain"></i>
+          </div>
+          <div>
+            <h2 class="text-sm font-bold text-white tracking-wide uppercase flex items-center gap-2">
+              Human-Written Screening Engine
+              <span
+                class="text-[10px] px-2 py-0.5 rounded-full bg-emerald-500/10 text-emerald-400 border border-emerald-500/20 font-semibold">Zero
+                AI Footprint</span>
+            </h2>
+            <p class="text-xs text-slate-400">Tests how the engine automatically answers employer screening questions
+              with real project data and zero em-dashes.</p>
+          </div>
+        </div>
+      </div>
+
+      <div class="flex flex-col sm:flex-row gap-2 mt-4">
+        <input type="text" id="screening-q-input"
+          placeholder="Type any screening question (e.g. 'Why do you want to join?', 'Experience with LangGraph', 'Notice period')..."
+          class="flex-1 px-4 py-2.5 rounded-xl bg-slate-900 border border-slate-700 text-xs text-white placeholder-slate-500 focus:outline-none focus:border-emerald-500">
+        <button onclick="testScreening()"
+          class="px-5 py-2.5 rounded-xl bg-emerald-600 hover:bg-emerald-500 text-white text-xs font-semibold flex items-center justify-center gap-1.5 transition">
+          <i class="fa-solid fa-wand-magic-sparkles"></i>
+          Test Answer
+        </button>
+      </div>
+
+      <div id="screening-ans-box"
+        class="mt-3 p-3.5 rounded-xl bg-slate-950/70 border border-slate-900 text-xs text-slate-300 font-mono hidden">
+        <span class="text-emerald-400 font-semibold block mb-1">Human-Written Response:</span>
+        <p id="screening-ans-text" class="text-slate-200 leading-relaxed font-sans"></p>
+      </div>
+    </div>
+
+    <!-- ATS Score Booster & 1-Click Resume Auto-Tailor -->
+    <div class="glass rounded-2xl p-6 border border-slate-800">
+      <div class="flex items-center justify-between mb-4">
+        <div class="flex items-center space-x-2.5">
+          <div
+            class="w-8 h-8 rounded-lg bg-indigo-500/20 border border-indigo-500/30 flex items-center justify-center text-indigo-400 text-sm">
+            <i class="fa-solid fa-file-shield"></i>
+          </div>
+          <div>
+            <h2 class="text-sm font-bold text-white tracking-wide uppercase flex items-center gap-2">
+              ATS Match Booster &amp; 1-Click Resume Tailoring
+              <span
+                class="text-[10px] px-2 py-0.5 rounded-full bg-indigo-500/10 text-indigo-400 border border-indigo-500/20 font-semibold">1-Page
+                Strictly Verified</span>
+            </h2>
+            <p class="text-xs text-slate-400">Scores any Job Description against Vansh's MCA AI profile, surfaces
+              missing keywords, and automatically compiles an ATS-optimized PDF.</p>
+          </div>
+        </div>
+      </div>
+
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+        <div class="space-y-3">
+          <div class="grid grid-cols-2 gap-2">
+            <input type="text" id="ats-company-input" placeholder="Company Name (e.g. ScaleAI)"
+              class="px-3.5 py-2 rounded-xl bg-slate-900 border border-slate-700 text-xs text-white placeholder-slate-500 focus:outline-none focus:border-indigo-500">
+            <input type="text" id="ats-role-input" placeholder="Role (e.g. AI Engineer)" value="AI Engineer"
+              class="px-3.5 py-2 rounded-xl bg-slate-900 border border-slate-700 text-xs text-white placeholder-slate-500 focus:outline-none focus:border-indigo-500">
+          </div>
+          <textarea id="ats-jd-input" rows="4"
+            placeholder="Paste the Job Description (JD) here to calculate ATS match and auto-tailor resume..."
+            class="w-full px-3.5 py-2.5 rounded-xl bg-slate-900 border border-slate-700 text-xs text-white placeholder-slate-500 focus:outline-none focus:border-indigo-500 resize-none"></textarea>
+          <div class="flex gap-2">
+            <button onclick="calculateATS()"
+              class="flex-1 py-2 rounded-xl bg-indigo-600 hover:bg-indigo-500 text-white text-xs font-semibold flex items-center justify-center gap-1.5 transition">
+              <i class="fa-solid fa-chart-simple"></i>
+              Calculate ATS Match
+            </button>
+            <button onclick="tailorResumeNow()"
+              class="flex-1 py-2 rounded-xl bg-purple-600 hover:bg-purple-500 text-white text-xs font-semibold flex items-center justify-center gap-1.5 transition">
+              <i class="fa-solid fa-file-arrow-down"></i>
+              Compile Tailored PDF
+            </button>
+          </div>
+        </div>
+
+        <div id="ats-result-box"
+          class="p-4 rounded-xl bg-slate-950/60 border border-slate-800 flex flex-col justify-between">
+          <div class="flex items-center justify-between pb-2 border-b border-slate-800">
+            <span class="text-xs font-semibold text-slate-300">ATS Match Analysis</span>
+            <span id="ats-score-badge" class="text-sm font-extrabold text-indigo-400">Ready</span>
+          </div>
+          <div id="ats-details-content" class="text-xs text-slate-400 space-y-2 mt-2">
+            <p>Paste a Job Description and click "Calculate ATS Match" to evaluate keyword density and domain alignment.
+            </p>
+          </div>
+          <div id="ats-download-area" class="mt-3 pt-2 border-t border-slate-800 text-[11px] text-slate-400 hidden">
+            <!-- Dynamic Tailored Resume link -->
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Recruiter Direct Cold-Outreach & InMail Dispatcher -->
+    <div class="glass rounded-2xl p-6 border border-slate-800">
+      <div class="flex items-center justify-between mb-4">
+        <div class="flex items-center space-x-2.5">
+          <div
+            class="w-8 h-8 rounded-lg bg-cyan-500/20 border border-cyan-500/30 flex items-center justify-center text-cyan-400 text-sm">
+            <i class="fa-solid fa-paper-plane"></i>
+          </div>
+          <div>
+            <h2 class="text-sm font-bold text-white tracking-wide uppercase flex items-center gap-2">
+              Recruiter Direct Cold-Outreach &amp; InMail
+              <span
+                class="text-[10px] px-2 py-0.5 rounded-full bg-cyan-500/10 text-cyan-400 border border-cyan-500/20 font-semibold">Bypasses
+                ATS Filters</span>
+            </h2>
+            <p class="text-xs text-slate-400">Reaches hiring managers directly with human-written pitches citing real
+              projects (ResearchMind, LexAI) with 0 em-dashes.</p>
+          </div>
+        </div>
+      </div>
+
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+        <div class="space-y-3">
+          <div class="grid grid-cols-2 gap-2">
+            <input type="text" id="outreach-company" placeholder="Target Company (e.g. NextAstra)"
+              class="px-3.5 py-2 rounded-xl bg-slate-900 border border-slate-700 text-xs text-white placeholder-slate-500 focus:outline-none focus:border-cyan-500">
+            <input type="text" id="outreach-role" placeholder="Target Role" value="AI Engineer"
+              class="px-3.5 py-2 rounded-xl bg-slate-900 border border-slate-700 text-xs text-white placeholder-slate-500 focus:outline-none focus:border-cyan-500">
+          </div>
+          <div class="grid grid-cols-2 gap-2">
+            <input type="text" id="outreach-recruiter" placeholder="Recruiter / Manager Name"
+              class="px-3.5 py-2 rounded-xl bg-slate-900 border border-slate-700 text-xs text-white placeholder-slate-500 focus:outline-none focus:border-cyan-500">
+            <select id="outreach-channel"
+              class="px-3 py-2 rounded-xl bg-slate-900 border border-slate-700 text-xs text-white focus:outline-none focus:border-cyan-500">
+              <option value="email">Cold Email</option>
+              <option value="inmail">LinkedIn InMail / Note</option>
+              <option value="manager">Engineering Manager Pitch</option>
+            </select>
+          </div>
+          <input type="text" id="outreach-context"
+            placeholder="Tech Focus or Team Context (e.g. Autonomous Agents, FastAPI)"
+            class="w-full px-3.5 py-2 rounded-xl bg-slate-900 border border-slate-700 text-xs text-white placeholder-slate-500 focus:outline-none focus:border-cyan-500">
+          <button onclick="generatePitch()"
+            class="w-full py-2.5 rounded-xl bg-cyan-600 hover:bg-cyan-500 text-white text-xs font-semibold flex items-center justify-center gap-1.5 transition">
+            <i class="fa-solid fa-wand-magic-sparkles"></i>
+            Generate High-Intent Outreach Pitch
+          </button>
+        </div>
+
+        <div class="p-4 rounded-xl bg-slate-950/60 border border-slate-800 flex flex-col justify-between">
+          <div class="flex items-center justify-between pb-2 border-b border-slate-800">
+            <span class="text-xs font-semibold text-slate-300">Generated Pitch Preview</span>
+            <button onclick="copyPitch()"
+              class="text-xs text-cyan-400 hover:text-cyan-300 font-medium flex items-center gap-1">
+              <i class="fa-regular fa-copy"></i> Copy Pitch
+            </button>
+          </div>
+          <div id="outreach-preview-box"
+            class="flex-1 overflow-y-auto max-h-48 text-xs text-slate-300 font-mono my-2 p-2 bg-slate-900/60 rounded-lg">
+            Click "Generate High-Intent Outreach Pitch" to preview customized message.
+          </div>
+          <div class="pt-2 border-t border-slate-800 flex items-center justify-between">
+            <span class="text-[11px] text-slate-500">Zero em-dashes | High open rate</span>
+            <button onclick="logOutreachSent()"
+              class="px-3 py-1 rounded-lg bg-emerald-600 hover:bg-emerald-500 text-white text-xs font-semibold transition">
+              Mark as Sent
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Autonomous Assessment Solver & Technical Round Prep Kit -->
+    <div class="glass rounded-2xl p-6 border border-slate-800">
+      <div class="flex items-center justify-between mb-4">
+        <div class="flex items-center space-x-2.5">
+          <div
+            class="w-8 h-8 rounded-lg bg-emerald-500/20 border border-emerald-500/30 flex items-center justify-center text-emerald-400 text-sm">
+            <i class="fa-solid fa-code"></i>
+          </div>
+          <div>
+            <h2 class="text-sm font-bold text-white tracking-wide uppercase flex items-center gap-2">
+              Autonomous Assessment Solver &amp; Interview Prep Kit
+              <span
+                class="text-[10px] px-2 py-0.5 rounded-full bg-emerald-500/10 text-emerald-400 border border-emerald-500/20 font-semibold">HackerEarth
+                / Codility / CoderPad</span>
+            </h2>
+            <p class="text-xs text-slate-400">Instantly generates optimal DSA code solutions, test patterns, and real
+              project talking points for pending coding rounds.</p>
+          </div>
+        </div>
+      </div>
+
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+        <div class="space-y-3">
+          <div class="grid grid-cols-2 gap-2">
+            <input type="text" id="prep-company" placeholder="Company (e.g. NextAstra)"
+              class="px-3.5 py-2 rounded-xl bg-slate-900 border border-slate-700 text-xs text-white placeholder-slate-500 focus:outline-none focus:border-emerald-500">
+            <select id="prep-provider"
+              class="px-3 py-2 rounded-xl bg-slate-900 border border-slate-700 text-xs text-white focus:outline-none focus:border-emerald-500">
+              <option value="HackerEarth">HackerEarth Test</option>
+              <option value="Codility">Codility Assessment</option>
+              <option value="CoderPad">CoderPad Live Round</option>
+              <option value="HackerRank">HackerRank Challenge</option>
+            </select>
+          </div>
+          <textarea id="dsa-problem-input" rows="4"
+            placeholder="Paste coding assessment question or prompt here (e.g. 'Given an array find longest subarray...', 'Graph shortest path', 'Dynamic programming knapsack')..."
+            class="w-full px-3.5 py-2.5 rounded-xl bg-slate-900 border border-slate-700 text-xs text-white placeholder-slate-500 focus:outline-none focus:border-emerald-500 resize-none"></textarea>
+          <div class="flex gap-2">
+            <button onclick="solveDSA()"
+              class="flex-1 py-2 rounded-xl bg-emerald-600 hover:bg-emerald-500 text-white text-xs font-semibold flex items-center justify-center gap-1.5 transition">
+              <i class="fa-solid fa-terminal"></i>
+              Generate Optimal Code
+            </button>
+            <button onclick="generatePrepKit()"
+              class="flex-1 py-2 rounded-xl bg-teal-600 hover:bg-teal-500 text-white text-xs font-semibold flex items-center justify-center gap-1.5 transition">
+              <i class="fa-solid fa-book-open"></i>
+              Full Round Prep Kit
+            </button>
+          </div>
+        </div>
+
+        <div class="p-4 rounded-xl bg-slate-950/60 border border-slate-800 flex flex-col justify-between">
+          <div class="flex items-center justify-between pb-2 border-b border-slate-800">
+            <span class="text-xs font-semibold text-slate-300">Solution &amp; Prep Output</span>
+            <span id="prep-badge" class="text-xs text-emerald-400 font-mono">Ready</span>
+          </div>
+          <div id="prep-output-box"
+            class="flex-1 overflow-y-auto max-h-56 text-xs text-slate-300 font-mono my-2 p-2 bg-slate-900/60 rounded-lg">
+            Paste a problem or choose a company to generate an optimal solution and round strategy.
+          </div>
+          <div class="pt-2 border-t border-slate-800 flex items-center justify-between text-[11px] text-slate-500">
+            <span>Optimal Time/Space Complexity</span>
+            <button onclick="copyPrepOutput()" class="text-emerald-400 hover:text-emerald-300 font-medium">
+              <i class="fa-regular fa-copy mr-1"></i>Copy Solution
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Inbound Assessments & Interview Pipeline -->
+    <div class="glass rounded-2xl p-6 border border-slate-800">
+      <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-3 mb-4">
+        <div class="flex items-center space-x-2.5">
+          <div
+            class="w-8 h-8 rounded-lg bg-purple-500/20 border border-purple-500/30 flex items-center justify-center text-purple-400 text-sm">
+            <i class="fa-solid fa-envelope-open-text"></i>
+          </div>
+          <div>
+            <h2 class="text-sm font-bold text-white tracking-wide uppercase flex items-center gap-2">
+              Multi-Inbox Inbound Intelligence
+              <span id="interview-count-badge"
+                class="text-[10px] px-2 py-0.5 rounded-full bg-purple-500/10 text-purple-400 border border-purple-500/20 font-semibold">0
+                Detected</span>
+            </h2>
+            <p class="text-xs text-slate-400">Scanned across all 4 connected accounts: engagevansh, xalta26, vishurou61,
+              kalsharma908</p>
+          </div>
+        </div>
+        <div class="flex items-center gap-2">
+          <button onclick="scanInterviews()"
+            class="px-3.5 py-1.5 rounded-xl bg-purple-600 hover:bg-purple-500 text-white text-xs font-semibold flex items-center gap-1.5 transition">
+            <i class="fa-solid fa-arrows-rotate"></i>
+            Scan All 4 Inboxes
+          </button>
+        </div>
+      </div>
+
+      <!-- Inbound Summary Metrics Row -->
+      <div class="grid grid-cols-2 sm:grid-cols-4 gap-3 mb-4">
+        <div class="p-3 rounded-xl bg-emerald-500/10 border border-emerald-500/20">
+          <p class="text-[10px] uppercase font-bold text-emerald-400 tracking-wider">Shortlisted</p>
+          <p id="count-shortlisted" class="text-xl font-extrabold text-white mt-0.5">0</p>
+        </div>
+        <div class="p-3 rounded-xl bg-amber-500/10 border border-amber-500/20">
+          <p class="text-[10px] uppercase font-bold text-amber-400 tracking-wider">Assessments / Tests</p>
+          <p id="count-assessments" class="text-xl font-extrabold text-white mt-0.5">0</p>
+        </div>
+        <div class="p-3 rounded-xl bg-purple-500/10 border border-purple-500/20">
+          <p class="text-[10px] uppercase font-bold text-purple-400 tracking-wider">Interviews / Chats</p>
+          <p id="count-interviews" class="text-xl font-extrabold text-white mt-0.5">0</p>
+        </div>
+        <div class="p-3 rounded-xl bg-cyan-500/10 border border-cyan-500/20">
+          <p class="text-[10px] uppercase font-bold text-cyan-400 tracking-wider">Connected Inboxes</p>
+          <p class="text-xl font-extrabold text-white mt-0.5">4 Accounts</p>
+        </div>
+      </div>
+
+      <!-- Account Filter Pills -->
+      <div id="account-filter-row" class="flex flex-wrap gap-2 mb-4">
+        <button onclick="filterByAccount('ALL')" id="filter-btn-all"
+          class="px-3 py-1 rounded-full text-xs font-semibold bg-purple-600 text-white transition">All Accounts</button>
+        <button onclick="filterByAccount('engagevansh@gmail.com')" id="filter-btn-0"
+          class="px-3 py-1 rounded-full text-xs font-semibold bg-slate-800 text-slate-300 hover:bg-slate-700 transition">engagevansh@gmail.com</button>
+        <button onclick="filterByAccount('xalta26@gmail.com')" id="filter-btn-1"
+          class="px-3 py-1 rounded-full text-xs font-semibold bg-slate-800 text-slate-300 hover:bg-slate-700 transition">xalta26@gmail.com</button>
+        <button onclick="filterByAccount('vishurou61@gmail.com')" id="filter-btn-2"
+          class="px-3 py-1 rounded-full text-xs font-semibold bg-slate-800 text-slate-300 hover:bg-slate-700 transition">vishurou61@gmail.com</button>
+        <button onclick="filterByAccount('kalsharma908@gmail.com')" id="filter-btn-3"
+          class="px-3 py-1 rounded-full text-xs font-semibold bg-slate-800 text-slate-300 hover:bg-slate-700 transition">kalsharma908@gmail.com</button>
+      </div>
+
+      <div id="interviews-grid" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-3">
+        <div
+          class="p-4 rounded-xl bg-slate-900/40 border border-slate-800/80 text-xs text-slate-500 col-span-full text-center">
+          Loading incoming assessments and invites...
+        </div>
+      </div>
+    </div>
+
+    <!-- Live Recent Applications Table -->
+    <div class="glass rounded-2xl p-6 border border-slate-800">
+      <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-3 mb-4">
+        <div>
+          <h2 class="text-sm font-semibold text-white tracking-wide uppercase flex items-center gap-2">
+            <i class="fa-solid fa-list-check text-indigo-400"></i>
+            Recent Verified Submissions
+          </h2>
+          <p class="text-xs text-slate-400 mt-0.5">Directly pulled from job_applications_tracker.csv</p>
+        </div>
+        <input type="text" id="search-input" onkeyup="filterTable()" placeholder="Search company or role..."
+          class="px-3 py-1.5 rounded-xl bg-slate-900 border border-slate-700 text-xs text-white placeholder-slate-500 focus:outline-none focus:border-indigo-500 w-full sm:w-64">
+      </div>
+
+      <div class="overflow-x-auto rounded-xl border border-slate-800/80">
+        <table class="w-full text-left text-xs text-slate-300">
+          <thead class="bg-slate-900/80 text-slate-400 uppercase font-medium border-b border-slate-800">
+            <tr>
+              <th class="py-3 px-4">Date</th>
+              <th class="py-3 px-4">Company</th>
+              <th class="py-3 px-4">Role</th>
+              <th class="py-3 px-4">Location</th>
+              <th class="py-3 px-4">Platform</th>
+              <th class="py-3 px-4">Status</th>
+              <th class="py-3 px-4 text-right">Job Link</th>
+            </tr>
+          </thead>
+          <tbody id="applications-table-body" class="divide-y divide-slate-800/60">
+            <tr>
+              <td colspan="7" class="py-4 text-center text-slate-500">Loading verified submissions...</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+  </main>
+
+  <footer class="glass py-4 px-6 border-t border-slate-800 text-center text-xs text-slate-500">
+    Job Applications Mission Control | Vansh Sharma Portfolio Automation Fleet
+  </footer>
+
+  <script>
+    let recentData = [];
+
+    async function fetchStats() {
+      try {
+        const res = await fetch('/api/stats');
+        const data = await res.json();
+
+        document.getElementById('stat-total').innerText = data.total_all_time || '0';
+        document.getElementById('stat-today').innerText = data.total_today || '0';
+        document.getElementById('stat-portals').innerText = Object.keys(data.portals || {}).length;
+
+        // Status pill
+        const statusPill = document.getElementById('status-pill');
+        const statusText = document.getElementById('status-text');
+        if (data.is_running) {
+          statusPill.className = "flex items-center space-x-2 px-3 py-1.5 rounded-full bg-amber-500/10 border border-amber-500/20 text-amber-400 text-xs font-semibold";
+          statusText.innerText = "RUNNING: " + (data.active_task || "Task");
+        } else {
+          statusPill.className = "flex items-center space-x-2 px-3 py-1.5 rounded-full bg-emerald-500/10 border border-emerald-500/20 text-emerald-400 text-xs font-semibold";
+          statusText.innerText = "SYSTEM READY";
+        }
+
+        // Portals breakdown with Smart Quota Progress Bars
+        const portalContainer = document.getElementById('portal-cards');
+        const portals = data.portals || {};
+        const quotas = data.quotas || {};
+
+        let portalHtml = '';
+        const portalColors = {
+          'Naukri': 'bg-blue-500',
+          'LinkedIn': 'bg-sky-500',
+          'Cutshort': 'bg-purple-500',
+          'foundit': 'bg-amber-500',
+          'Hirist': 'bg-teal-500',
+          'Instahyre': 'bg-emerald-500',
+          'Hasjob': 'bg-indigo-500'
+        };
+
+        for (const [name, q] of Object.entries(quotas)) {
+          const applied = q.applied_today || 0;
+          const limit = q.limit || 10;
+          const pct = Math.min(100, Math.round((applied / limit) * 100));
+          const color = portalColors[name] || 'bg-indigo-500';
+          const badge = q.is_capped
+            ? '<span class="text-[10px] px-2 py-0.5 rounded-full bg-red-500/15 text-red-400 border border-red-500/30 font-semibold">CAPPED</span>'
+            : `<span class="text-[10px] px-2 py-0.5 rounded-full bg-emerald-500/15 text-emerald-400 border border-emerald-500/30 font-semibold">${q.remaining} slots open</span>`;
+
+          portalHtml += `
+            <div class="p-3 rounded-xl bg-slate-900/60 border border-slate-800 space-y-2">
+              <div class="flex items-center justify-between">
+                <div class="flex items-center space-x-2">
+                  <span class="w-2.5 h-2.5 rounded-full ${color}"></span>
+                  <span class="font-semibold text-slate-200 text-xs">${name}</span>
+                </div>
+                ${badge}
+              </div>
+              <div class="w-full bg-slate-800 rounded-full h-1.5 overflow-hidden">
+                <div class="${q.is_capped ? 'bg-red-500' : color} h-1.5 rounded-full transition-all duration-500" style="width: ${pct}%"></div>
+              </div>
+              <div class="flex items-center justify-between text-[11px] text-slate-400">
+                <span>Today: <strong class="text-white">${applied}</strong> / ${limit}</span>
+                <span>Total: <strong class="text-slate-300">${portals[name] || applied}</strong></span>
+              </div>
+            </div>
+          `;
+        }
+        portalContainer.innerHTML = portalHtml || '<div class="text-xs text-slate-500">No portal quota data</div>';
+
+        // Recent table
+        recentData = data.recent || [];
+        renderTable(recentData);
+
+      } catch (e) {
+        console.error("Stats fetch error:", e);
+      }
+    }
+
+    async function fetchLogs() {
+      try {
+        const res = await fetch('/api/logs');
+        const data = await res.json();
+        const box = document.getElementById('terminal-box');
+        const status = document.getElementById('log-status');
+
+        status.innerText = data.is_running ? ('Running ' + data.active_task) : 'Idle';
+
+        if (data.logs && data.logs.length > 0) {
+          box.innerHTML = data.logs.map(l => {
+            let color = "text-slate-300";
+            if (l.includes("SUCCESS")) color = "text-emerald-400 font-semibold";
+            else if (l.includes("Error") || l.includes("failed")) color = "text-red-400";
+            else if (l.includes("Evaluating") || l.includes("Starting")) color = "text-cyan-400";
+            return `<div class="${color}">${escapeHtml(l)}</div>`;
+          }).join('');
+          box.scrollTop = box.scrollHeight;
+        }
+      } catch (e) {
+        console.error("Logs fetch error:", e);
+      }
+    }
+
+    function renderTable(rows) {
+      const tbody = document.getElementById('applications-table-body');
+      if (!rows || rows.length === 0) {
+        tbody.innerHTML = `<tr><td colspan="7" class="py-4 text-center text-slate-500">No applications found</td></tr>`;
+        return;
+      }
+      tbody.innerHTML = rows.map(r => `
+        <tr class="hover:bg-slate-800/40 transition">
+          <td class="py-3 px-4 font-mono text-slate-400">${escapeHtml(r.date || '')}</td>
+          <td class="py-3 px-4 font-semibold text-white">${escapeHtml(r.company || 'Unknown')}</td>
+          <td class="py-3 px-4 text-slate-300">${escapeHtml(r.role || '')}</td>
+          <td class="py-3 px-4 text-slate-400">${escapeHtml(r.location || 'India')}</td>
+          <td class="py-3 px-4">
+            <span class="px-2 py-0.5 rounded-full bg-slate-800 text-slate-300 border border-slate-700 text-xs">${escapeHtml(r.portal || '')}</span>
+          </td>
+          <td class="py-3 px-4">
+            <span class="px-2 py-0.5 rounded-full bg-emerald-500/10 text-emerald-400 border border-emerald-500/20 text-xs font-semibold">Submitted</span>
+          </td>
+          <td class="py-3 px-4 text-right">
+            ${r.url ? `<a href="${r.url}" target="_blank" class="text-indigo-400 hover:text-indigo-300 underline text-xs">View <i class="fa-solid fa-arrow-up-right-from-square ml-1 text-[10px]"></i></a>` : '-'}
+          </td>
+        </tr>
+      `).join('');
+    }
+
+    function filterTable() {
+      const q = document.getElementById('search-input').value.toLowerCase();
+      const filtered = recentData.filter(r =>
+        (r.company && r.company.toLowerCase().includes(q)) ||
+        (r.role && r.role.toLowerCase().includes(q)) ||
+        (r.portal && r.portal.toLowerCase().includes(q))
+      );
+      renderTable(filtered);
+    }
+
+    async function triggerRun(target) {
+      try {
+        const res = await fetch('/api/run', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ target })
+        });
+        const data = await res.json();
+        if (data.success) {
+          fetchStats();
+          fetchLogs();
+        } else {
+          alert(data.error || "Failed to start task");
+        }
+      } catch (e) {
+        alert("Error connecting to server: " + e.message);
+      }
+    }
+
+    async function stopRun() {
+      try {
+        const res = await fetch('/api/stop', { method: 'POST' });
+        const data = await res.json();
+        alert(data.message || "Task stopped");
+        fetchStats();
+        fetchLogs();
+      } catch (e) {
+        alert("Error stopping task: " + e.message);
+      }
+    }
+
+    async function testScreening() {
+      const input = document.getElementById('screening-q-input');
+      const box = document.getElementById('screening-ans-box');
+      const text = document.getElementById('screening-ans-text');
+      if (!input.value.trim()) return;
+
+      text.innerText = 'Evaluating question...';
+      box.classList.remove('hidden');
+
+      try {
+        const res = await fetch('/api/test-screening', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ question: input.value })
+        });
+        const data = await res.json();
+        text.innerText = data.answer || 'No response generated';
+      } catch (e) {
+        text.innerText = 'Error: ' + e.message;
+      }
+    }
+
+    function escapeHtml(str) {
+      return (str || '').replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;');
+    }
+
+    // Polling intervals
+    fetchStats();
+    fetchLogs();
+    fetchInterviews();
+    setInterval(fetchStats, 3000);
+    setInterval(fetchLogs, 1500);
+    setInterval(fetchInterviews, 10000);
+
+    let allInterviews = [];
+    let currentAccountFilter = 'ALL';
+
+    async function fetchInterviews() {
+      try {
+        const res = await fetch('/api/interviews');
+        const data = await res.json();
+        allInterviews = data.interviews || [];
+        const metrics = data.metrics || {};
+
+        document.getElementById('interview-count-badge').innerText = allInterviews.length + ' Detected';
+        document.getElementById('count-shortlisted').innerText = metrics.shortlisted || 0;
+        document.getElementById('count-assessments').innerText = metrics.assessments || 0;
+        document.getElementById('count-interviews').innerText = metrics.interviews || 0;
+
+        renderInterviews();
+      } catch (e) {
+        console.error("Interviews fetch error:", e);
+      }
+    }
+
+    function filterByAccount(acc) {
+      currentAccountFilter = acc;
+      ['all', '0', '1', '2', '3'].forEach(k => {
+        const btn = document.getElementById('filter-btn-' + k);
+        if (btn) {
+          btn.className = "px-3 py-1 rounded-full text-xs font-semibold bg-slate-800 text-slate-300 hover:bg-slate-700 transition";
+        }
+      });
+      if (acc === 'ALL') {
+        document.getElementById('filter-btn-all').className = "px-3 py-1 rounded-full text-xs font-semibold bg-purple-600 text-white transition";
+      } else if (acc === 'engagevansh@gmail.com') {
+        document.getElementById('filter-btn-0').className = "px-3 py-1 rounded-full text-xs font-semibold bg-purple-600 text-white transition";
+      } else if (acc === 'xalta26@gmail.com') {
+        document.getElementById('filter-btn-1').className = "px-3 py-1 rounded-full text-xs font-semibold bg-purple-600 text-white transition";
+      } else if (acc === 'vishurou61@gmail.com') {
+        document.getElementById('filter-btn-2').className = "px-3 py-1 rounded-full text-xs font-semibold bg-purple-600 text-white transition";
+      } else if (acc === 'kalsharma908@gmail.com') {
+        document.getElementById('filter-btn-3').className = "px-3 py-1 rounded-full text-xs font-semibold bg-purple-600 text-white transition";
+      }
+      renderInterviews();
+    }
+
+    function renderInterviews() {
+      const grid = document.getElementById('interviews-grid');
+      let items = allInterviews;
+      if (currentAccountFilter !== 'ALL') {
+        items = allInterviews.filter(x => x.account === currentAccountFilter);
+      }
+
+      if (!items || items.length === 0) {
+        grid.innerHTML = '<div class="p-4 rounded-xl bg-slate-900/40 border border-slate-800/80 text-xs text-slate-500 col-span-full text-center">No assessments or interviews detected for this filter. Click "Scan All 4 Inboxes" to sync.</div>';
+        return;
+      }
+
+      grid.innerHTML = items.map(item => {
+        let badgeColor = "bg-purple-500/10 text-purple-400 border-purple-500/20";
+        if (item.category === "ASSESSMENT") badgeColor = "bg-amber-500/10 text-amber-400 border-amber-500/20";
+        if (item.category === "SHORTLISTED") badgeColor = "bg-emerald-500/10 text-emerald-400 border-emerald-500/20";
+        if (item.category === "REJECTED") badgeColor = "bg-red-500/10 text-red-400 border-red-500/20";
+
+        return `
+          <div class="p-4 rounded-xl bg-slate-900/60 border border-slate-800 hover:border-slate-700 transition flex flex-col justify-between space-y-3">
+            <div>
+              <div class="flex items-center justify-between gap-2 mb-1.5">
+                <span class="text-[10px] px-2 py-0.5 rounded-full font-semibold border ${badgeColor}">
+                  ${escapeHtml(item.category || 'UPDATE')}
+                </span>
+                <span class="text-[11px] font-mono text-slate-500">${escapeHtml(item.date || '')}</span>
+              </div>
+              <h4 class="text-xs font-semibold text-white line-clamp-1">${escapeHtml(item.sender || 'Unknown Sender')}</h4>
+              <p class="text-xs text-slate-300 font-medium line-clamp-2 mt-1">${escapeHtml(item.subject || '')}</p>
+              ${item.snippet ? `<p class="text-[11px] text-slate-500 line-clamp-2 mt-1">${escapeHtml(item.snippet)}</p>` : ''}
+            </div>
+            <div class="flex items-center justify-between pt-2 border-t border-slate-800/60 text-[11px]">
+              <span class="text-purple-400 font-mono text-[10px] bg-purple-500/10 px-1.5 py-0.5 rounded border border-purple-500/20">${escapeHtml(item.account || '')}</span>
+              <a href="${item.link || '#'}" target="_blank" class="text-indigo-400 hover:text-indigo-300 font-medium flex items-center gap-1">
+                Open in Gmail <i class="fa-solid fa-arrow-up-right-from-square text-[9px]"></i>
+              </a>
+            </div>
+          </div>
+        `;
+      }).join('');
+    }
+
+    async function scanInterviews() {
+      try {
+        const res = await fetch('/api/scan-interviews', { method: 'POST' });
+        const data = await res.json();
+        if (data.success) {
+          fetchStats();
+          fetchLogs();
+          setTimeout(fetchInterviews, 3000);
+        } else {
+          alert(data.error || "Failed to trigger scan");
+        }
+      } catch (e) {
+        alert("Error scanning interviews: " + e.message);
+      }
+    }
+
+    // ATS Match & Tailor Handlers
+    async function calculateATS() {
+      const jd = document.getElementById('ats-jd-input').value;
+      const role = document.getElementById('ats-role-input').value || 'AI Engineer';
+      if (!jd.trim()) {
+        alert("Please paste a Job Description first!");
+        return;
+      }
+      const badge = document.getElementById('ats-score-badge');
+      const details = document.getElementById('ats-details-content');
+      badge.innerText = "Analyzing...";
+
+      try {
+        const res = await fetch('/api/ats-score', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ jd, role })
+        });
+        const data = await res.json();
+        badge.innerHTML = `<span class="px-2 py-0.5 rounded-full ${data.score >= 75 ? 'bg-emerald-500/20 text-emerald-400' : 'bg-amber-500/20 text-amber-400'} border border-current font-extrabold">${data.score}% ATS Match</span>`;
+
+        details.innerHTML = `
+          <p><strong class="text-white">Domain:</strong> ${data.domain || 'AI & Systems'}</p>
+          <p><strong class="text-emerald-400">Matched High-Yield Keywords:</strong> ${(data.matched_keywords || []).join(', ') || 'Standard profile skills'}</p>
+          <p><strong class="text-amber-400">Recommended Additions:</strong> ${(data.suggested_additions || []).join(', ') || 'Fully covered'}</p>
+        `;
+      } catch (e) {
+        badge.innerText = "Error";
+        details.innerText = "Failed to calculate ATS score: " + e.message;
+      }
+    }
+
+    async function tailorResumeNow() {
+      const comp = document.getElementById('ats-company-input').value || 'Target Company';
+      const role = document.getElementById('ats-role-input').value || 'AI Engineer';
+      const jd = document.getElementById('ats-jd-input').value || '';
+
+      const downloadArea = document.getElementById('ats-download-area');
+      downloadArea.classList.remove('hidden');
+      downloadArea.innerHTML = `<span class="text-indigo-400 animate-pulse"><i class="fa-solid fa-spinner fa-spin mr-1"></i> Generating verified 1-page PDF...</span>`;
+
+      try {
+        const res = await fetch('/api/tailor-resume', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ company: comp, role, jd })
+        });
+        const data = await res.json();
+        if (data.success && data.result) {
+          const r = data.result;
+          downloadArea.innerHTML = `
+            <div class="flex items-center justify-between bg-indigo-500/10 border border-indigo-500/20 p-2.5 rounded-lg">
+              <div>
+                <span class="text-white font-semibold block">${escapeHtml(r.pdf_filename)}</span>
+                <span class="text-[10px] text-emerald-400">1-Page Strictly Verified | ATS Match: ${r.ats_score}%</span>
+              </div>
+              <span class="text-slate-400 font-mono text-[10px]">Saved to tailored_outputs</span>
+            </div>
+          `;
+        } else {
+          downloadArea.innerHTML = `<span class="text-red-400">Error tailoring resume</span>`;
+        }
+      } catch (e) {
+        downloadArea.innerHTML = `<span class="text-red-400">Error: ${e.message}</span>`;
+      }
+    }
+
+    // Recruiter Direct Outreach Handlers
+    let currentPitchText = "";
+    async function generatePitch() {
+      const comp = document.getElementById('outreach-company').value;
+      const role = document.getElementById('outreach-role').value || 'AI Engineer';
+      const recruiter = document.getElementById('outreach-recruiter').value || 'Hiring Team';
+      const channel = document.getElementById('outreach-channel').value || 'email';
+      const context = document.getElementById('outreach-context').value || '';
+
+      if (!comp.trim()) {
+        alert("Please enter a target company name!");
+        return;
+      }
+
+      const box = document.getElementById('outreach-preview-box');
+      box.innerText = "Drafting personalized human-written message...";
+
+      try {
+        const res = await fetch('/api/generate-outreach', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ company: comp, role, recruiter_name: recruiter, channel, context })
+        });
+        const data = await res.json();
+        if (data.success && data.pitch) {
+          currentPitchText = data.pitch.full_text;
+          box.innerHTML = `<pre class="whitespace-pre-wrap font-sans text-xs text-slate-200 leading-relaxed">${escapeHtml(currentPitchText)}</pre>`;
+        }
+      } catch (e) {
+        box.innerText = "Error generating pitch: " + e.message;
+      }
+    }
+
+    function copyPitch() {
+      if (!currentPitchText) {
+        alert("Generate a pitch first!");
+        return;
+      }
+      navigator.clipboard.writeText(currentPitchText).then(() => {
+        alert("Pitch copied to clipboard!");
+      }).catch(err => {
+        alert("Could not copy: " + err);
+      });
+    }
+
+    async function logOutreachSent() {
+      const comp = document.getElementById('outreach-company').value;
+      const role = document.getElementById('outreach-role').value;
+      const recruiter = document.getElementById('outreach-recruiter').value;
+      const channel = document.getElementById('outreach-channel').value;
+      if (!comp) return;
+
+      try {
+        await fetch('/api/log-outreach', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ company: comp, role, recruiter_name: recruiter, channel })
+        });
+        alert(`Logged outreach to ${comp} in pipeline!`);
+      } catch (e) {
+        alert("Error logging outreach: " + e.message);
+      }
+    }
+
+    // Assessment Solver & Prep Kit Handlers
+    let currentPrepOutput = "";
+
+    async function solveDSA() {
+      const prob = document.getElementById('dsa-problem-input').value;
+      if (!prob.trim()) {
+        alert("Please paste a problem description or prompt first!");
+        return;
+      }
+      const badge = document.getElementById('prep-badge');
+      const box = document.getElementById('prep-output-box');
+      badge.innerText = "Solving...";
+      box.innerText = "Analyzing archetype and generating optimal solution...";
+
+      try {
+        const res = await fetch('/api/solve-dsa', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ problem: prob })
+        });
+        const data = await res.json();
+        if (data.success && data.solution) {
+          const s = data.solution;
+          badge.innerHTML = `<span class="text-emerald-400 font-bold">${escapeHtml(s.complexity)}</span>`;
+          currentPrepOutput = `# ARCHETYPE: ${s.archetype}\n# COMPLEXITY: ${s.complexity}\n\n${s.code}`;
+          box.innerHTML = `<pre class="whitespace-pre-wrap font-mono text-xs text-emerald-300 leading-relaxed">${escapeHtml(currentPrepOutput)}</pre>`;
+        }
+      } catch (e) {
+        badge.innerText = "Error";
+        box.innerText = "Error generating solution: " + e.message;
+      }
+    }
+
+    async function generatePrepKit() {
+      const comp = document.getElementById('prep-company').value || 'Tech Company';
+      const provider = document.getElementById('prep-provider').value || 'HackerEarth';
+      const badge = document.getElementById('prep-badge');
+      const box = document.getElementById('prep-output-box');
+
+      badge.innerText = "Compiling...";
+      box.innerText = `Generating interview prep kit for ${comp} on ${provider}...`;
+
+      try {
+        const res = await fetch('/api/prep-kit', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ company: comp, role: 'AI Engineer', provider })
+        });
+        const data = await res.json();
+        if (data.success && data.kit) {
+          const k = data.kit;
+          badge.innerText = `${provider} Strategy`;
+          let out = `=== ${k.company.toUpperCase()} TECHNICAL ROUND PREPARATION KIT ===\n`;
+          out += `Platform: ${k.provider} | Role: ${k.role}\n\n`;
+          out += `--- TEST BREAKDOWN ---\n`;
+          k.test_structure.forEach(s => {
+            out += `[${s.section}] (${s.duration}): ${s.details}\n`;
+          });
+          out += `\n--- KEY RESUME TALKING POINTS ---\n`;
+          k.key_talking_points_for_interviews.forEach(p => {
+            out += `• ${p}\n`;
+          });
+          out += `\n--- HIGH-FREQUENCY DSA PATTERNS ---\n`;
+          k.top_dsa_patterns.forEach(p => {
+            out += `• ${p.title}: ${p.pattern}\n  Example: ${p.example}\n`;
+          });
+          currentPrepOutput = out;
+          box.innerHTML = `<pre class="whitespace-pre-wrap font-sans text-xs text-slate-200 leading-relaxed">${escapeHtml(out)}</pre>`;
+        }
+      } catch (e) {
+        badge.innerText = "Error";
+        box.innerText = "Error compiling prep kit: " + e.message;
+      }
+    }
+
+    function copyPrepOutput() {
+      if (!currentPrepOutput) {
+        alert("Generate code or prep kit first!");
+        return;
+      }
+      navigator.clipboard.writeText(currentPrepOutput).then(() => {
+        alert("Copied to clipboard!");
+      }).catch(err => {
+        alert("Copy failed: " + err);
+      });
+    }
+  </script>
+</body>
+
+</html>
