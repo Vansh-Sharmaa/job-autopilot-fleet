@@ -65,6 +65,22 @@ def run_cycle():
         log("AUTOPILOT", "Stage 3: All platforms are already 100% filled today. Sleeping until reset.")
 
     log("AUTOPILOT", "Cycle complete. All data synced to Mission Control Dashboard.")
+    auto_git_sync()
+
+def auto_git_sync():
+    try:
+        log("GIT-SYNC", "Checking for changes to push to GitHub...")
+        subprocess.run(["git", "add", "job_applications_tracker.csv", "interviews_tracker.json"], cwd=BASE_DIR, check=True)
+        res = subprocess.run(["git", "status", "--porcelain"], cwd=BASE_DIR, capture_output=True, text=True)
+        if res.stdout.strip():
+            ts = datetime.now().strftime("%Y-%m-%d %H:%M")
+            subprocess.run(["git", "commit", "-m", f"chore(telemetry): update applications and pipeline status [{ts}]"], cwd=BASE_DIR, check=True)
+            subprocess.run(["git", "push", "origin", "main"], cwd=BASE_DIR, timeout=30, check=True)
+            log("GIT-SYNC", "Successfully pushed fresh commit to GitHub!")
+        else:
+            log("GIT-SYNC", "Working tree clean, no new commits needed.")
+    except Exception as e:
+        log("GIT-SYNC", f"Git sync notice: {e}")
 
 def daemon_loop():
     log("DAEMON", "==========================================================")
