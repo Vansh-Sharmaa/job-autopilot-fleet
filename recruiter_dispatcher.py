@@ -26,14 +26,14 @@ A quick snapshot of relevant work:
 - ResearchMind: Multi-agent arXiv intelligence system built with LangGraph, PyTorch, and hybrid BM25/FAISS retrieval.
 - LexAI: End-to-end legal intelligence platform with verifiable source attribution, sub-200ms API response, and 0 hallucinations.
 
-I would love the opportunity to contribute to {company}'s engineering initiatives. My resume is attached, and my portfolio projects can be reviewed at github.com/XALTA26.
+I would love the opportunity to contribute to {company}'s engineering initiatives. My resume is attached, and my portfolio projects can be reviewed at github.com/Vansh-Sharmaa.
 
 Are you open to a brief 10-minute introductory conversation this week?
 
 Warm regards,
 Vansh Sharma
 engagevansh@gmail.com | +91 9310461877 | New Delhi, India
-github.com/XALTA26 | linkedin.com/in/vansh-sharma
+github.com/Vansh-Sharmaa | linkedin.com/in/vansh-sharma
 """,
 
     "linkedin_inmail": """Hi {recruiter_name},
@@ -46,7 +46,7 @@ I would welcome the chance to discuss how my practical AI engineering skill set 
 
 Best regards,
 Vansh Sharma
-github.com/XALTA26
+github.com/Vansh-Sharmaa
 """,
 
     "hiring_manager_tech": """Subject: Practical AI Engineering for {company} - Vansh Sharma
