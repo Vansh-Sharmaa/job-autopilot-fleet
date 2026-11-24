@@ -182,11 +182,11 @@ def select_option(preferred_list, options, default="Yes"):
 def sanitize_output(text):
     """
     Enforces strict zero AI footprints:
-    - Zero em-dashes (—) or en-dashes (–)
+    - Zero em-dashes (\u2014) or en-dashes (\u2013)
     - Replaces with hyphens or commas
     - Removes banned boilerplate
     """
-    text = text.replace("—", ", ").replace("–", "-")
+    text = text.replace("\u2014", ", ").replace("\u2013", "-")
     return text.strip()
 
 if __name__ == "__main__":
