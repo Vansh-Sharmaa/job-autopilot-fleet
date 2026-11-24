@@ -47,95 +47,53 @@ def append_to_tracker(company, role, location, portal, url, status="Submitted"):
 def run_unstop_runner(max_apps=5):
     """Scan Unstop for active 0-2 YOE fresher AI, Python and Tech challenges"""
     log("UNSTOP", f"Scanning Unstop for Fresher & Entry-Level Developer Challenges (Target: {max_apps})...")
-    # Using Orca or browse to inspect unstop jobs
-    prompt = (
-        "Open unstop.com/jobs and search for 'AI Engineer' or 'Python Developer' with Experience: 0-2 years. "
-        "Locate 3-5 active job postings. Apply using Vansh Sharma's MCA AI profile (MCA AI & Data Science 2026, Python, PyTorch, LangGraph). "
-        "Ensure zero em-dashes in all answers, submit and confirm application."
-    )
-    cmd = [
-        "orca", "agent", "launch", "--agent", "claude",
-        "--worktree", r"path:C:\Users\XALTA\.orca\bots\job-hunter",
-        "--prompt", prompt, "--json"
-    ]
+    # Native direct automation for Unstop
     try:
-        res = subprocess.run(cmd, capture_output=True, text=True, timeout=120)
-        log("UNSTOP", f"Unstop run result: {res.stdout[:200]}")
+        from fill_all_direct import auto_fill_direct
+        applied = auto_fill_direct("Unstop", max_apps, "AI Engineer")
+        log("UNSTOP", f"Direct Unstop runner applied: {applied} applications.")
     except Exception as e:
-        log("UNSTOP", f"Runner notice: {e}")
+        log("UNSTOP", f"Direct runner fallback active: {e}")
 
 def run_cuvette_runner(max_apps=5):
     """Scan Cuvette tech internships and entry-level full-time roles"""
     log("CUVETTE", f"Scanning Cuvette for 0-2 YOE Tech roles (Target: {max_apps})...")
-    prompt = (
-        "Open cuvette.tech/jobs. Filter by Software Engineering / AI / Python. "
-        "Review listings for 0-2 YOE freshers. Apply with resume for Vansh Sharma, expected CTC 6 LPA. "
-        "Confirm submission and report applied companies."
-    )
-    cmd = [
-        "orca", "agent", "launch", "--agent", "claude",
-        "--worktree", r"path:C:\Users\XALTA\.orca\bots\job-hunter",
-        "--prompt", prompt, "--json"
-    ]
     try:
-        res = subprocess.run(cmd, capture_output=True, text=True, timeout=120)
-        log("CUVETTE", f"Cuvette run result: {res.stdout[:200]}")
+        from fill_all_direct import auto_fill_direct
+        applied = auto_fill_direct("Cuvette", max_apps, "AI Developer")
+        log("CUVETTE", f"Direct Cuvette runner applied: {applied} applications.")
     except Exception as e:
-        log("CUVETTE", f"Runner notice: {e}")
+        log("CUVETTE", f"Direct runner fallback active: {e}")
 
 def run_wellfound_runner(max_apps=5):
     """Scan Wellfound (AngelList) for AI/ML and Python startup roles"""
     log("WELLFOUND", f"Scanning Wellfound for 0-2 YOE AI/ML Startups (Target: {max_apps})...")
-    prompt = (
-        "Navigate to wellfound.com/jobs. Filter for 'AI Engineer' or 'Python Developer' in India or Remote, "
-        "Experience 0-2 years. Check for 1-click Quick Apply. Submit tailored note with zero em-dashes and confirm."
-    )
-    cmd = [
-        "orca", "agent", "launch", "--agent", "claude",
-        "--worktree", r"path:C:\Users\XALTA\.orca\bots\job-hunter",
-        "--prompt", prompt, "--json"
-    ]
     try:
-        res = subprocess.run(cmd, capture_output=True, text=True, timeout=120)
-        log("WELLFOUND", f"Wellfound run result: {res.stdout[:200]}")
+        from fill_all_direct import auto_fill_direct
+        applied = auto_fill_direct("Wellfound", max_apps, "Machine Learning Engineer")
+        log("WELLFOUND", f"Direct Wellfound runner applied: {applied} applications.")
     except Exception as e:
-        log("WELLFOUND", f"Runner notice: {e}")
+        log("WELLFOUND", f"Direct runner fallback active: {e}")
 
 def run_yc_runner(max_apps=5):
     """Scan Y Combinator Work at a Startup for early stage engineering roles"""
     log("YC-STARTUP", f"Scanning Y Combinator Work at a Startup (Target: {max_apps})...")
-    prompt = (
-        "Navigate to workatastartup.com. Search for software engineering or AI roles accepting freshers / 0-2 YOE. "
-        "Submit profile with Vansh Sharma's project highlights (ResearchMind, LexAI). Confirm."
-    )
-    cmd = [
-        "orca", "agent", "launch", "--agent", "claude",
-        "--worktree", r"path:C:\Users\XALTA\.orca\bots\job-hunter",
-        "--prompt", prompt, "--json"
-    ]
     try:
-        res = subprocess.run(cmd, capture_output=True, text=True, timeout=120)
-        log("YC-STARTUP", f"YC Startup run result: {res.stdout[:200]}")
+        from fill_all_direct import auto_fill_direct
+        applied = auto_fill_direct("YC Startup", max_apps, "Python Backend Developer")
+        log("YC-STARTUP", f"Direct YC runner applied: {applied} applications.")
     except Exception as e:
-        log("YC-STARTUP", f"Runner notice: {e}")
+        log("YC-STARTUP", f"Direct runner fallback active: {e}")
 
 def run_indeed_runner(max_apps=5):
-    """Apply to 0-2 YOE verified roles on Indeed India via Brave session"""
+    """Apply to 0-2 YOE verified roles on Indeed India via direct session"""
     log("INDEED", f"Scanning Indeed India for Easily Apply roles (Target: {max_apps})...")
-    prompt = (
-        "Open in.indeed.com. Search for 'AI Engineer' or 'Python Developer' with location 'India' and experience 'Entry Level'. "
-        "Filter for 'Easily apply' postings. Submit up to 5 verified applications with zero em-dashes and 0-2 YOE qualifications."
-    )
-    cmd = [
-        "orca", "agent", "launch", "--agent", "claude",
-        "--worktree", r"path:C:\Users\XALTA\.orca\bots\job-hunter",
-        "--prompt", prompt, "--json"
-    ]
     try:
-        res = subprocess.run(cmd, capture_output=True, text=True, timeout=120)
-        log("INDEED", f"Indeed run result: {res.stdout[:200]}")
+        from fill_all_direct import auto_fill_direct
+        applied = auto_fill_direct("Indeed", max_apps, "AI Engineer")
+        log("INDEED", f"Direct Indeed runner applied: {applied} applications.")
     except Exception as e:
-        log("INDEED", f"Runner notice: {e}")
+        log("INDEED", f"Direct runner fallback active: {e}")
 
 if __name__ == "__main__":
     target = sys.argv[1] if len(sys.argv) > 1 else "all"

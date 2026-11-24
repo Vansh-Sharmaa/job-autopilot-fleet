@@ -76,35 +76,25 @@ def run_foundit_agent():
         log("FOUNDIT-AGENT", f"Error: {e}")
     log("FOUNDIT-AGENT", "foundit mass engine batch completed.")
 
-# AGENT 3: ORCA AUTONOMOUS AGENT (CUTSHORT & HIRIST)
-def run_orca_hunter_agent():
+# AGENT 3: NATIVE DIRECT FLEET RUNNER (CUTSHORT & HIRIST)
+def run_direct_hunter_agent():
     cutshort_rem = quota_manager.get_remaining_slots("Cutshort")
     hirist_rem = quota_manager.get_remaining_slots("Hirist")
 
     if cutshort_rem <= 0 and hirist_rem <= 0:
-        log("ORCA-HUNTER", "Daily quotas for Cutshort and Hirist are both capped. Skipping and shifting.")
+        log("DIRECT-HUNTER", "Daily quotas for Cutshort and Hirist are both capped. Skipping.")
         return
 
-    target_jobs = min(6, cutshort_rem + hirist_rem)
-    log("ORCA-HUNTER", f"Launching Orca Hunter ({cutshort_rem} Cutshort slots, {hirist_rem} Hirist slots open)...")
-    prompt = (
-        f"You are the autonomous Job Hunter bot for Vansh Sharma (0-2 YOE MCA AI & Data Science). "
-        f"Search Cutshort (cutshort.io) and Hirist (hirist.tech) for matching fresh roles in AI, Machine Learning, Python, and Operations. "
-        f"Apply up to {target_jobs} verified matching positions using candidate data: 0 years full-time, 6 months internship, 0 current CTC, 6 LPA expected CTC. "
-        f"Strictly verify 'Application sent' on live DOM, log to D:\\opencode stuff\\job-agents\\job_applications_tracker.csv, and close tabs cleanly. Zero em-dashes."
-    )
-    cmd = f'orca agent launch --agent claude --worktree "path:C:\\Users\\XALTA\\.orca\\bots\\job-hunter" --prompt "{prompt}" --json'
+    log("DIRECT-HUNTER", f"Launching Direct Hunter ({cutshort_rem} Cutshort slots, {hirist_rem} Hirist slots open)...")
     try:
-        p = subprocess.Popen(cmd, shell=True, stdout=subprocess.PIPE, stderr=subprocess.STDOUT, text=True, encoding="utf-8", errors="ignore")
-        for line in iter(p.stdout.readline, ''):
-            if not line:
-                break
-            log("ORCA-HUNTER", line.strip())
-        p.stdout.close()
-        p.wait()
+        from fill_all_direct import auto_fill_direct
+        if cutshort_rem > 0:
+            auto_fill_direct("Cutshort", min(cutshort_rem, 3), "AI Engineer")
+        if hirist_rem > 0:
+            auto_fill_direct("Hirist", min(hirist_rem, 3), "Python Developer")
     except Exception as e:
-        log("ORCA-HUNTER", f"Error: {e}")
-    log("ORCA-HUNTER", "Orca agent session dispatched.")
+        log("DIRECT-HUNTER", f"Error: {e}")
+    log("DIRECT-HUNTER", "Direct hunter batch dispatched.")
 
 # AGENT 4: HASJOB SCANNER & APPLY AGENT
 def run_hasjob_agent():
@@ -190,7 +180,7 @@ def main():
     if "foundit" in uncapped:
         threads.append(threading.Thread(target=run_foundit_agent, name="Thread-foundit"))
     if "Cutshort" in uncapped or "Hirist" in uncapped:
-        threads.append(threading.Thread(target=run_orca_hunter_agent, name="Thread-Orca"))
+        threads.append(threading.Thread(target=run_direct_hunter_agent, name="Thread-DirectHunter"))
     if "Hasjob" in uncapped:
         threads.append(threading.Thread(target=run_hasjob_agent, name="Thread-Hasjob"))
     if "Instahyre" in uncapped:

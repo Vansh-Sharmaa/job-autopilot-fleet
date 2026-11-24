@@ -285,37 +285,16 @@ class DashboardHandler(BaseHTTPRequestHandler):
                     task_title = "Daily Quota Maximizer (Fill All 13 Platforms)"
                 elif target == "swarm" or target == "mega_swarm":
                     cmd = [sys.executable, "-u", os.path.join(BASE_DIR, "mega_swarm_all_platforms.py")]
-                    task_title = "Mega-Swarm (All Platforms: LinkedIn + foundit + Orca + Hasjob + Instahyre)"
+                    task_title = "Mega-Swarm (All Platforms: LinkedIn + foundit + Direct + Hasjob + Instahyre)"
                 elif target == "linkedin":
                     cmd = [sys.executable, "-u", os.path.join(BASE_DIR, "linkedin_runner.py"), "5", "AI Engineer"]
                     task_title = "LinkedIn Easy Apply (5 AI Engineer Jobs)"
                 elif target == "operations":
                     cmd = [sys.executable, "-u", os.path.join(BASE_DIR, "linkedin_runner.py"), "5", "Operations Associate"]
                     task_title = "Operations Roles Easy Apply (Tech Ops, AI Ops, 0-2 YOE)"
-                elif target == "orca":
-                    prompt = "Execute safe fresher job hunting protocol for Vansh Sharma. Search 0-2 YOE AI / Python roles on Cutshort and Hirist. Max 5 applications, confirm submission, zero em-dashes."
-                    cmd = [
-                        "orca", "agent", "launch", "--agent", "claude",
-                        "--worktree", r"path:C:\Users\XALTA\.orca\bots\job-hunter",
-                        "--prompt", prompt, "--json"
-                    ]
-                    task_title = "Orca Job Hunter Autonomous Run"
-                elif target == "cutshort":
-                    prompt = "Open Cutshort jobs dashboard. Apply to 5 matching 0-2 YOE AI / Python developer roles. Auto-fill 0 years full-time, 6 months internship, 0 current CTC, 6 LPA expected CTC. Confirm submission and log."
-                    cmd = [
-                        "orca", "agent", "launch", "--agent", "claude",
-                        "--worktree", r"path:C:\Users\XALTA\.orca\bots\job-hunter",
-                        "--prompt", prompt, "--json"
-                    ]
-                    task_title = "Cutshort Autonomous Batch"
-                elif target == "hirist":
-                    prompt = "Open hirist.tech jobs for AI Engineer and Python Developer (0-2 YOE). Fill screening questions (Python: 1 yr, ML: 1 yr, CTC: 0, Expected: 6 LPA) and submit 3 verified applications."
-                    cmd = [
-                        "orca", "agent", "launch", "--agent", "claude",
-                        "--worktree", r"path:C:\Users\XALTA\.orca\bots\job-hunter",
-                        "--prompt", prompt, "--json"
-                    ]
-                    task_title = "Hirist Tech Batch"
+                elif target == "hunter" or target == "cutshort" or target == "hirist":
+                    cmd = [sys.executable, "-u", os.path.join(BASE_DIR, "auto_quota_closer.py")]
+                    task_title = "Direct Quota Closer Batch (Cutshort & Hirist)"
                 elif target == "unstop":
                     cmd = [sys.executable, "-u", os.path.join(BASE_DIR, "extended_platforms_runner.py"), "unstop"]
                     task_title = "Unstop Fresher Tech Challenges"

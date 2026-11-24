@@ -40,22 +40,15 @@ def run_foundit_agent():
     p.wait()
     log("AGENT-FOUNDIT", "foundit engine batch completed.")
 
-def run_orca_hunter_agent():
-    log("AGENT-ORCA", "Launching Orca Autonomous Agent across Cutshort & Hirist...")
-    prompt = (
-        "Execute safe fresher job hunting protocol for Vansh Sharma (0-2 YOE). "
-        "Search Cutshort (cutshort.io) and Hirist (hirist.tech) for active AI Engineer and Python roles. "
-        "Apply to 3 verified matching positions, confirm 'Application sent' on DOM, append to D:\\opencode stuff\\job-agents\\job_applications_tracker.csv, and close tabs cleanly. Zero em-dashes."
-    )
-    cmd = f'orca agent launch --agent claude --worktree "path:C:\\Users\\XALTA\\.orca\\bots\\job-hunter" --prompt "{prompt}" --json'
-    p = subprocess.Popen(cmd, shell=True, stdout=subprocess.PIPE, stderr=subprocess.STDOUT, text=True, encoding="utf-8", errors="ignore")
-    for line in iter(p.stdout.readline, ''):
-        if not line:
-            break
-        log("AGENT-ORCA", line.strip())
-    p.stdout.close()
-    p.wait()
-    log("AGENT-ORCA", "Orca agent session dispatched and working in background.")
+def run_direct_hunter_agent():
+    log("AGENT-HUNTER", "Launching Native Direct Fleet Runner across Cutshort & Hirist...")
+    try:
+        from fill_all_direct import auto_fill_direct
+        auto_fill_direct("Cutshort", 3, "AI Engineer")
+        auto_fill_direct("Hirist", 3, "Python Developer")
+        log("AGENT-HUNTER", "Native fleet batch for Cutshort and Hirist completed.")
+    except Exception as e:
+        log("AGENT-HUNTER", f"Notice: {e}")
 
 def run_operations_agent():
     log("AGENT-OPERATIONS", "Starting Operations Roles Agent (Tech Ops, AI Ops 0-2 YOE)...")
@@ -77,7 +70,7 @@ def main():
     threads = [
         threading.Thread(target=run_linkedin_agent, name="Thread-LinkedIn"),
         threading.Thread(target=run_foundit_agent, name="Thread-foundit"),
-        threading.Thread(target=run_orca_hunter_agent, name="Thread-Orca"),
+        threading.Thread(target=run_direct_hunter_agent, name="Thread-DirectHunter"),
         threading.Thread(target=run_operations_agent, name="Thread-Operations")
     ]
 

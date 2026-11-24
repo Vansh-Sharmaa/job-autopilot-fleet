@@ -69,25 +69,20 @@ def fill_all_daily_quotas():
     else:
         log("MAXIMIZER", "foundit is already fully capped for today.")
 
-    # STAGE 3: CUTSHORT & HIRIST VIA ORCA
+    # STAGE 3: CUTSHORT & HIRIST VIA NATIVE FLEET
     rem_cutshort = quota_manager.get_remaining_slots("Cutshort")
     rem_hirist = quota_manager.get_remaining_slots("Hirist")
     if rem_cutshort > 0 or rem_hirist > 0:
         log("MAXIMIZER", f"Targeting Cutshort ({rem_cutshort} slots) & Hirist ({rem_hirist} slots)...")
-        prompt = (
-            f"Fill all daily quotas for Vansh Sharma: Apply to {rem_cutshort} jobs on Cutshort and {rem_hirist} jobs on Hirist. "
-            "Filter 0-2 YOE, expected CTC 6 LPA, zero em-dashes. Confirm submissions and record in CSV."
-        )
-        cmd = [
-            "orca", "agent", "launch", "--agent", "claude",
-            "--worktree", r"path:C:\Users\XALTA\.orca\bots\job-hunter",
-            "--prompt", prompt, "--json"
-        ]
         try:
-            subprocess.run(cmd, capture_output=True, text=True, timeout=240)
+            from fill_all_direct import auto_fill_direct
+            if rem_cutshort > 0:
+                auto_fill_direct("Cutshort", rem_cutshort, "AI Engineer")
+            if rem_hirist > 0:
+                auto_fill_direct("Hirist", rem_hirist, "Python Developer")
         except Exception as e:
-            log("MAXIMIZER", f"Orca error: {e}")
-        time.sleep(5)
+            log("MAXIMIZER", f"Fleet error: {e}")
+        time.sleep(2)
 
     # STAGE 4: EXTENDED PLATFORMS (Unstop, Cuvette, Wellfound, YC, Indeed)
     ext_platforms = ["unstop", "cuvette", "wellfound", "yc", "indeed"]
