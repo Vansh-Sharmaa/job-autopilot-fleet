@@ -328,6 +328,7 @@ def sync_imap_gmail(target_account=None):
                         "scheduledTime": clean_dashes(sched),
                         "meetingLink": clean_dashes(meeting),
                         "snippet": clean_dashes(body_text[:200].replace("\n", " ")),
+                        "body": clean_dashes(body_text),
                         "account": user_email,
                         "status": "Upcoming" if cat == "INTERVIEW" else "Processed"
                     }
@@ -381,6 +382,7 @@ def parse_pasted_text(raw_text, account=None):
         "scheduledTime": sched,
         "meetingLink": meeting,
         "snippet": text[:250].replace("\n", " "),
+        "body": text,
         "account": user_account,
         "status": "Upcoming" if cat == "INTERVIEW" else "Processed"
     }

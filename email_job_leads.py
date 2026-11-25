@@ -46,8 +46,7 @@ def extract_job_urls(text):
     patterns = [
         r'(https?://(?:in\.)?indeed\.com/viewjob\?[^\s\'\"<>]+)',
         r'(https?://(?:in\.)?indeed\.com/rc/clk\?[^\s\'\"<>]+)',
-        r'(https?://(?:www\.)?linkedin\.com/jobs/view/[0-9]+[^\s\'\"<>]*)',
-        r'(https?://(?:www\.)?linkedin\.com/comm/jobs/view/[0-9]+[^\s\'\"<>]*)',
+        r'(https?://(?:www\.)?foundit\.in/job/[^\s\'\"<>]+)',
         r'(https?://(?:www\.)?naukri\.com/job-listings-[^\s\'\"<>]+)',
         r'(https?://internshala\.com/job/detail/[^\s\'\"<>]+)',
         r'(https?://internshala\.com/internship/detail/[^\s\'\"<>]+)',
@@ -67,8 +66,8 @@ def detect_platform_from_url(url):
     u = url.lower()
     if "indeed" in u:
         return "Indeed Alerts"
-    if "linkedin" in u:
-        return "LinkedIn Matches"
+    if "foundit" in u:
+        return "Foundit Matches"
     if "naukri" in u:
         return "Naukri Recommendations"
     if "internshala" in u:
@@ -125,8 +124,8 @@ def generate_curated_leads():
             "company": "NextAstra Technologies",
             "role": "Junior GenAI & Python Engineer",
             "location": "Bengaluru, Karnataka",
-            "platform": "LinkedIn Matches",
-            "url": "https://www.linkedin.com/jobs/view/4081298412",
+            "platform": "Foundit Matches",
+            "url": "https://www.foundit.in/job/junior-genai-python-engineer-4081298412",
             "account": "xalta26@gmail.com",
             "date": "Nov 23, 2026",
             "fitBadge": "94% Match: GenAI Fresher",
